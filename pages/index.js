@@ -1,42 +1,17 @@
-import Head from "next/head"
-import { Movie } from "../components/Movie"
-import styles from "../styles/Home.module.css"
-import { useSearchMovies } from "../hooks/useSearchMovies"
+import { useUser } from "@auth0/nextjs-auth0"
+import { useRouter } from "next/router"
+import { pages } from "../constants"
 
-export default function Home({ movies }) {
-    if (!movies || !movies.length) {
-        return <h1>Oh no my movies...</h1>
-    }
+export default function Main() {
+    const router = useRouter()
 
-    return (
-        <div>
-            <Head>
-                <title>Movies App</title>
-                <meta
-                    name="description"
-                    content="Random movie app using OMDB API"
-                />
-                <link rel="icon" href="/favicon.ico" />
-            </Head>
+    const { user, error, isLoading } = useUser()
+    if (error) return <p>Oh no...{error.message}</p>
+    if (isLoading) return <p>Loading..</p>
 
-            <main>
-                <h1>Welcome to the Movies App Here</h1>
-                <div className={styles.container}>
-                    {movies.map((movie) => (
-                        <Movie {...movie} />
-                    ))}
-                </div>
-            </main>
-        </div>
-    )
-}
+    const destination = user ? pages.HOME : pages.LOGIN
 
-export async function getStaticProps() {
-    const data = await useSearchMovies("star wars")
+    router.push(destination)
 
-    return {
-        props: {
-            movies: data.Search.slice(0, 10),
-        },
-    }
+    return null
 }
