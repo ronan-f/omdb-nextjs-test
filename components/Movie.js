@@ -1,9 +1,11 @@
-export const Movie = ({ imdbId, Year, Title, Poster }) => {
+import styles from "../styles/Movie.module.css"
+
+export const Movie = ({ Year, Title, Poster }) => {
     return (
-        <div key={imdbId}>
-            <h3>Title: {Title}</h3>
+        <div>
+            <h3 className={styles.title}>Title: {Title}</h3>
             <h3>Year: {Year}</h3>
-            <img src={Poster} alt="movie poster" />
+            <img className={styles.poster} src={Poster} alt="movie poster" />
         </div>
     )
 }
