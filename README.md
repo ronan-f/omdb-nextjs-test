@@ -1,4 +1,4 @@
-![Vercel](https://vercelbadge.vercel.app/api/[ronan-f]/[omdb-nextjs-test])
+![Vercel](https://vercelbadge.vercel.app/api/ronan-f/omdb-nextjs-test)
 
 ## Getting Started
 
