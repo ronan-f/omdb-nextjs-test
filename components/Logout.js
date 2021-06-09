@@ -1,10 +1,11 @@
 import Link from "next/link"
 import { auth } from "../constants"
+import { Button } from "@material-ui/core"
 
 export const Logout = () => {
     return (
         <Link href={auth.LOGOUT}>
-            <button>Logout</button>
+            <Button variant="contained">Logout</Button>
         </Link>
     )
 }

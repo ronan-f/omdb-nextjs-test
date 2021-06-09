@@ -2,6 +2,7 @@ import Head from "next/head"
 import Link from "next/link"
 import { auth } from "../constants"
 import { Container } from "../components/Container"
+import { Button } from "@material-ui/core"
 
 const Login = () => {
     return (
@@ -29,7 +30,7 @@ const LoginDialog = () => {
             <p>Login to get started</p>
 
             <Link href={auth.LOGIN}>
-                <button>Login</button>
+                <Button variant="contained">Login</Button>
             </Link>
         </div>
     )
