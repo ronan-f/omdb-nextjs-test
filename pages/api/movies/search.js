@@ -20,7 +20,9 @@ export default async function moviesHandler(req, res) {
             .json(formatResponse(false, 401, `Not authorized`))
     }
 
-    if (!authenticateRequest(req)) {
+    const couldAuth = await authenticateRequest(req)
+
+    if (!couldAuth) {
         return res
             .status(401)
             .json(formatResponse(false, 401, `Not authorized`))
@@ -68,7 +70,7 @@ export default async function moviesHandler(req, res) {
 
 const formatCookies = (cookiesData) => {
     return Object.entries(cookiesData)
-        .map(([key, value]) => `${key}}=${value}`)
+        .map(([key, value]) => `${key}=${value}`)
         .join("; ")
 }
 
