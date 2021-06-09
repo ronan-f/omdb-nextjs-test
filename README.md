@@ -2,7 +2,7 @@
 
 ## Getting Started
 
-First, copy .env.example into a new file called .env.local and fill in the values, then run the development server:
+First, copy `.env.example` into a new file called .env.local and fill in the values, then run the development server:
 
 ```bash
 npm install
