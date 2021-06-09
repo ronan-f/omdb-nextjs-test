@@ -3,20 +3,33 @@ import { Movie } from "../components/Movie"
 import { useSearchMovies } from "../hooks/useSearchMovies"
 import styles from "../styles/Home.module.css"
 import { Layout } from "../components/Layout"
+import SearchBar from "../components/SearchBar"
+import { useState } from "react"
 
-const Home = ({ movies }) => {
+const Home = () => {
     const { user, error, isLoading } = useUser()
-
-    if (!movies || !movies.length) return <p>Oh no..my movies</p>
+    const [movies, setMovies] = useState([])
 
     if (isLoading) return <p>Loading...</p>
     if (error) return <p>Oh no my error: {error.message}</p>
+
+    const handleSearch = async (e) => {
+        if (e.target.value && e.code === "Enter") {
+            const result = await useSearchMovies(e.target.value)
+
+            if (result) {
+                setMovies(result.data.slice(0, 10))
+            }
+        }
+    }
 
     if (user) {
         return (
             <Layout>
                 <main>
-                    <MoviesContainer movies={movies} />
+                    <SearchBar handleSearch={handleSearch} />
+
+                    {movies && <MoviesContainer movies={movies} />}
                 </main>
             </Layout>
         )
@@ -31,16 +44,6 @@ const MoviesContainer = ({ movies }) => {
             ))}
         </div>
     )
-}
-
-export async function getStaticProps() {
-    const data = (await useSearchMovies("star wars")) || []
-
-    return {
-        props: {
-            movies: data.Search.slice(0, 10),
-        },
-    }
 }
 
 export default Home
