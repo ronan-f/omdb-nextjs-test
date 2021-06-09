@@ -1,10 +1,32 @@
 import { formatResponse } from "../_helpers/formatResponse"
-import { config } from "../../../config"
+import { config, server } from "../../../config"
 
 export default async function moviesHandler(req, res) {
     const { method, body } = req
 
-    const parsedBody = JSON.parse(body)
+    let parsedBody
+
+    try {
+        parsedBody = JSON.parse(body)
+    } catch (e) {
+        return res
+            .status(400)
+            .json(formatResponse(false, 400, `Could not parse request`))
+    }
+
+    if (!req.cookies) {
+        return res
+            .status(401)
+            .json(formatResponse(false, 401, `Not authorized`))
+    }
+
+    const couldAuth = await authenticateRequest(req)
+
+    if (!couldAuth) {
+        return res
+            .status(401)
+            .json(formatResponse(false, 401, `Not authorized`))
+    }
 
     if (method !== "POST")
         return res
@@ -46,6 +68,23 @@ export default async function moviesHandler(req, res) {
     return res.status(200).json(formatResponse(true, 200, result.Search))
 }
 
+const formatCookies = (cookiesData) => {
+    return Object.entries(cookiesData)
+        .map(([key, value]) => `${key}=${value}`)
+        .join("; ")
+}
+
 const paramified = (title) => {
     return title.split(" ").join("+")
+}
+
+const authenticateRequest = async (req) => {
+    let user = await fetch(`${server}/api/auth/me`, {
+        method: "GET",
+        headers: { Cookie: formatCookies(req.cookies) },
+    })
+
+    user = await user.json()
+
+    return user && !user.error
 }

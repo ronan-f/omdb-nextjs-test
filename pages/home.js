@@ -37,6 +37,8 @@ const Home = () => {
 }
 
 const MoviesContainer = ({ movies }) => {
+    if (!movies || !Array.isArray(movies)) return null
+
     return (
         <div className={styles.container}>
             {movies.map((movie) => (
