@@ -7,6 +7,8 @@ const theme = createMuiTheme(appTheme);
 export default function App({ Component, pageProps }) {
     return (
         <UserProvider>
+            <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+            <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lexend+Deca&display=swap" />
             <ThemeProvider theme={theme}>
                 <Component {...pageProps} />
             </ThemeProvider>

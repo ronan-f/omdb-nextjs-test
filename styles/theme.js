@@ -8,6 +8,9 @@ const theme = {
       main: '#19857b',
     },
   },
+  typography: {
+    fontFamily: 'Lexend Deca, sans-serif',
+  },
 };
 
 export default theme;
