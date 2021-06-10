@@ -1,49 +1,19 @@
 import { formatResponse } from "../_helpers/formatResponse"
-import { config, server } from "../../../config"
+import { config } from "../../../config"
+import nc from "next-connect"
+import authenticateRequest from "../_middleware/auth"
+import { parseBody, validateParams } from "../_middleware/validation/movies"
 
-export default async function moviesHandler(req, res) {
-    const { method, body } = req
+const handler = nc()
+    .use(authenticateRequest)
+    .use(parseBody)
+    .use(validateParams)
+    .post(moviesHandler)
 
-    let parsedBody
+export default handler
 
-    try {
-        parsedBody = JSON.parse(body)
-    } catch (e) {
-        return res
-            .status(400)
-            .json(formatResponse(false, 400, `Could not parse request`))
-    }
-
-    if (!req.cookies) {
-        return res
-            .status(401)
-            .json(formatResponse(false, 401, `Not authorized`))
-    }
-
-    const couldAuth = await authenticateRequest(req)
-
-    if (!couldAuth) {
-        return res
-            .status(401)
-            .json(formatResponse(false, 401, `Not authorized`))
-    }
-
-    if (method !== "POST")
-        return res
-            .status(405)
-            .json(formatResponse(false, 405, `Method ${method} not allowed`))
-
-    if (!parsedBody.movie) {
-        return res
-            .status(400)
-            .json(
-                formatResponse(
-                    false,
-                    400,
-                    "Request must include movie term to search"
-                )
-            )
-    }
+async function moviesHandler(_, res) {
+    const { parsedBody } = res.locals
 
     let result = await fetch(
         `http://www.omdbapi.com/?s=${paramified(
@@ -68,23 +38,6 @@ export default async function moviesHandler(req, res) {
     return res.status(200).json(formatResponse(true, 200, result.Search))
 }
 
-const formatCookies = (cookiesData) => {
-    return Object.entries(cookiesData)
-        .map(([key, value]) => `${key}=${value}`)
-        .join("; ")
-}
-
 const paramified = (title) => {
     return title.split(" ").join("+")
-}
-
-const authenticateRequest = async (req) => {
-    let user = await fetch(`${server}/api/auth/me`, {
-        method: "GET",
-        headers: { Cookie: formatCookies(req.cookies) },
-    })
-
-    user = await user.json()
-
-    return user && !user.error
 }
