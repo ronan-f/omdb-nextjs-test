@@ -9,7 +9,7 @@ export const Movie = ({ Year, Title, Poster }) => {
                 className={styles.poster}
                 src={Poster}
                 onError={handleError}
-                alt="movie poster"
+                alt={`Movie poster for ${Title}`}
             />
         </div>
     )
