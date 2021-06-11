@@ -3,6 +3,7 @@ import Link from "next/link"
 import { auth } from "../constants"
 import { Container } from "../components/Container"
 import { Button } from "@material-ui/core"
+import Typography from '@material-ui/core/Typography';
 
 const Login = () => {
     return (
@@ -26,11 +27,15 @@ export default Login
 const LoginDialog = () => {
     return (
         <div>
-            <h1>Welcome to Movies App</h1>
-            <p>Login to get started</p>
-
+            <Typography variant="h2">
+                Welcome to Movies App
+            </Typography>
+            <Typography variant="h3">
+                Login to get started
+            </Typography>
+            <br></br>
             <Link href={auth.LOGIN}>
-                <Button variant="contained">Login</Button>
+                <Button variant="contained" color="primary" >Login</Button>
             </Link>
         </div>
     )
