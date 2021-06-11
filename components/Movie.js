@@ -1,10 +1,11 @@
 import styles from "../styles/Movie.module.css"
+import Typography from '@material-ui/core/Typography';
 
 export const Movie = ({ Year, Title, Poster }) => {
     return (
         <div>
-            <h3 className={styles.title}>Title: {Title}</h3>
-            <h3>Year: {Year}</h3>
+            <Typography variant="h6" className={styles.title}>{Title}</Typography>
+            <Typography variant="h6">{Year}</Typography>
             <img
                 className={styles.poster}
                 src={Poster}

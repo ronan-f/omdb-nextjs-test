@@ -1,6 +1,7 @@
 import { useUser } from "@auth0/nextjs-auth0"
 import { Container } from "./Container"
 import { Logout } from "./Logout"
+import Typography from '@material-ui/core/Typography';
 
 export const Header = () => {
     return (
@@ -17,8 +18,8 @@ const Welcome = () => {
     if (error) return <p>Oh no...{error.message}</p>
 
     return (
-        <h1>
-            Hello <span>{user.name}</span>.{" "}
-        </h1>
+        <Typography variant="h5">
+            Hello {user.name}.
+        </Typography>
     )
 }
