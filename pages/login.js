@@ -28,7 +28,7 @@ const LoginDialog = () => {
     return (
         <div>
             <Typography variant="h2">
-                Welcome to Movies App
+                Welcome to The Great & Powerful Movies App 🎬
             </Typography>
             <Typography variant="h3">
                 Login to get started
