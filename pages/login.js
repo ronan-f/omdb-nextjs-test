@@ -7,18 +7,19 @@ import Typography from '@material-ui/core/Typography';
 
 const Login = () => {
     return (
-        <Container>
+        <>
             <Head>
-                <title>Movies App</title>
+                <title>TGAP Movies</title>
                 <meta
                     name="description"
                     content="Random movie app using OMDB API"
                 />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-
-            <LoginDialog />
-        </Container>
+            <Container>
+                <LoginDialog />
+            </Container>
+        </>
     )
 }
 
