@@ -1,5 +1,5 @@
 import { useUser } from "@auth0/nextjs-auth0"
-import { Movie } from "../components/Movie"
+import Movie from "../components/Movie";
 import { useSearchMovies } from "../hooks/useSearchMovies"
 import styles from "../styles/Home.module.css"
 import { Layout } from "../components/Layout"
@@ -36,7 +36,7 @@ const Home = () => {
     }
 }
 
-const MoviesContainer = ({ movies }) => {
+export const MoviesContainer = ({ movies }) => {
     if (!movies || !Array.isArray(movies)) return null
 
     return (
@@ -48,4 +48,4 @@ const MoviesContainer = ({ movies }) => {
     )
 }
 
-export default Home
+export default Home;
