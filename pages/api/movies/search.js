@@ -8,7 +8,7 @@ const handler = nc().use(parseBody).use(validateParams).post(moviesHandler)
 
 export default withApiAuthRequired(handler)
 
-async function moviesHandler(_, res) {
+export async function moviesHandler(_, res) {
     const { parsedBody } = res.locals
 
     let result = await fetch(
