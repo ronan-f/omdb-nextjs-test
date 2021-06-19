@@ -2,6 +2,11 @@
   "name": "movies",
   "version": "0.1.0",
   "private": true,
+  "jest": {
+    "transform": {
+      "\\.js$": ["babel-jest", { "configFile": "./babel.config.test.cjs" }]
+    }
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
