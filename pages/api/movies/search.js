@@ -12,7 +12,7 @@ const handler = nc()
 
 export default handler
 
-async function moviesHandler(_, res) {
+export async function moviesHandler(_, res) {
     const { parsedBody } = res.locals
 
     let result = await fetch(
