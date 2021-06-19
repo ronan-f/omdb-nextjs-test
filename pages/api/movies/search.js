@@ -1,16 +1,12 @@
 import { formatResponse } from "../_helpers/formatResponse"
 import { config } from "../../../config"
 import nc from "next-connect"
-import authenticateRequest from "../_middleware/auth"
 import { parseBody, validateParams } from "../_middleware/validation/movies"
+import { withApiAuthRequired } from "@auth0/nextjs-auth0"
 
-const handler = nc()
-    .use(authenticateRequest)
-    .use(parseBody)
-    .use(validateParams)
-    .post(moviesHandler)
+const handler = nc().use(parseBody).use(validateParams).post(moviesHandler)
 
-export default handler
+export default withApiAuthRequired(handler)
 
 async function moviesHandler(_, res) {
     const { parsedBody } = res.locals
