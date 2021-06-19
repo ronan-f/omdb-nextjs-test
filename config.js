@@ -1,4 +1,8 @@
 const getApiKey = (key) => {
+    if (process.env.NODE_ENV === "test") {
+        return "test env var"
+    }
+
     const isServer = typeof window === "undefined"
 
     if (!isServer) return
