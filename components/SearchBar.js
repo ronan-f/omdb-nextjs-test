@@ -7,11 +7,10 @@ import { debounce } from "throttle-debounce"
 
 const TIME_BETWEEN_NETWORK_REQUESTS = 200
 
-export default function Asynchronous() {
-    const [open, setOpen] = useState(false)
+export default function SearchBar() {
+    const [isOpen, setOpen] = useState(false)
     const [options, setOptions] = useState([])
     const [isLoading, setIsLoading] = useState(false)
-    const loading = open && isLoading
 
     const handleChange = (e) => {
         setIsLoading(true)
@@ -44,7 +43,9 @@ export default function Asynchronous() {
 
     const LoadingIndicator = ({ params }) => (
         <>
-            {loading ? <CircularProgress color="inherit" size={20} /> : null}
+            {isOpen && isLoading && (
+                <CircularProgress color="inherit" size={20} />
+            )}
             {params.InputProps.endAdornment}
         </>
     )
@@ -65,13 +66,13 @@ export default function Asynchronous() {
     return (
         <Autocomplete
             style={{ width: 300 }}
-            open={open}
+            open={isOpen}
             onOpen={() => setOpen(true)}
             onClose={() => setOpen(false)}
             getOptionSelected={(option, value) => option === value}
             getOptionLabel={(option) => option}
             options={options}
-            loading={loading}
+            loading={isOpen && isLoading}
             onClose={handleClose}
             renderInput={SearchInput}
         />
