@@ -14,6 +14,8 @@ export default function Asynchronous() {
     const loading = open && isLoading
 
     const handleChange = (e) => {
+        setIsLoading(true)
+
         debounceFunc(e.target.value)
     }
 
@@ -27,8 +29,6 @@ export default function Asynchronous() {
         TIME_BETWEEN_NETWORK_REQUESTS,
         false,
         async (searchTerm) => {
-            setIsLoading(true)
-
             if (searchTerm.length < 2) return
 
             const result = await useSearchMovies(searchTerm)
