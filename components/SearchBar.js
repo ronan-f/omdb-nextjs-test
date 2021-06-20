@@ -28,7 +28,7 @@ export default function SearchBar() {
         TIME_BETWEEN_NETWORK_REQUESTS,
         false,
         async (searchTerm) => {
-            if (searchTerm.length < 2) return
+            if (searchTerm.length < 2) return // API needs at least 3 characters to return results
 
             const result = await useSearchMovies(searchTerm)
 
