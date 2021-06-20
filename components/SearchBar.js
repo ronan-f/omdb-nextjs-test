@@ -3,9 +3,9 @@ import TextField from "@material-ui/core/TextField"
 import Autocomplete from "@material-ui/lab/Autocomplete"
 import { useSearchMovies } from "../hooks/useSearchMovies"
 import CircularProgress from "@material-ui/core/CircularProgress"
-import { throttle } from "throttle-debounce"
+import { debounce } from "throttle-debounce"
 
-const TIME_BETWEEN_NETWORK_REQUESTS = 300
+const TIME_BETWEEN_NETWORK_REQUESTS = 200
 
 export default function Asynchronous() {
     const [open, setOpen] = useState(false)
@@ -14,16 +14,18 @@ export default function Asynchronous() {
     const loading = open && isLoading
 
     const handleChange = (e) => {
-        throttleFunc(e.target.value)
+        debounceFunc(e.target.value)
     }
 
     const handleClose = () => {
+        debounceFunc.cancel()
         setOpen(false)
         setOptions([])
     }
 
-    const throttleFunc = throttle(
+    const debounceFunc = debounce(
         TIME_BETWEEN_NETWORK_REQUESTS,
+        false,
         async (searchTerm) => {
             setIsLoading(true)
 
@@ -34,7 +36,8 @@ export default function Asynchronous() {
             setIsLoading(false)
 
             if (result.success && Array.isArray(result.data)) {
-                setOptions(result.data.map((movie) => movie.Title))
+                const newOptions = result.data.map((movie) => movie.Title)
+                setOptions(newOptions)
             }
         }
     )
