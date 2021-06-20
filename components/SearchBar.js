@@ -1,42 +1,76 @@
-import IconButton from "@material-ui/core/IconButton"
-import InputAdornment from "@material-ui/core/InputAdornment"
-import SearchIcon from "@material-ui/icons/Search"
-import { TextField } from "@material-ui/core"
-import { Autocomplete } from "@material-ui/lab"
+import { useState } from "react"
+import TextField from "@material-ui/core/TextField"
+import Autocomplete from "@material-ui/lab/Autocomplete"
+import { useSearchMovies } from "../hooks/useSearchMovies"
+import CircularProgress from "@material-ui/core/CircularProgress"
+import { throttle } from "throttle-debounce"
 
-const SearchBar = ({ handleSearch }) => {
+const TIME_BETWEEN_NETWORK_REQUESTS = 300
+
+export default function Asynchronous() {
+    const [open, setOpen] = useState(false)
+    const [options, setOptions] = useState([])
+    const [isLoading, setIsLoading] = useState(false)
+    const loading = open && isLoading
+
+    const handleChange = (e) => {
+        throttleFunc(e.target.value)
+    }
+
+    const handleClose = () => {
+        setOpen(false)
+        setOptions([])
+    }
+
+    const throttleFunc = throttle(
+        TIME_BETWEEN_NETWORK_REQUESTS,
+        async (searchTerm) => {
+            setIsLoading(true)
+
+            if (searchTerm.length < 2) return
+
+            const result = await useSearchMovies(searchTerm)
+
+            setIsLoading(false)
+
+            if (result.success && Array.isArray(result.data)) {
+                setOptions(result.data.map((movie) => movie.Title))
+            }
+        }
+    )
+
+    const LoadingIndicator = ({ params }) => (
+        <>
+            {loading ? <CircularProgress color="inherit" size={20} /> : null}
+            {params.InputProps.endAdornment}
+        </>
+    )
+
+    const SearchInput = (params) => (
+        <TextField
+            {...params}
+            label="Search for a movie..."
+            variant="outlined"
+            onChange={handleChange}
+            InputProps={{
+                ...params.InputProps,
+                endAdornment: <LoadingIndicator params={params} />,
+            }}
+        />
+    )
+
     return (
         <Autocomplete
-            id="combo-box-demo"
-            options={films}
-            onKeyPress={handleSearch}
-            autoHighlight
-            getOptionLabel={(option) => option.title}
             style={{ width: 300 }}
-            renderOption={(option) => <span>{option.title}</span>}
-            renderInput={(params) => <TextInput {...params} />}
+            open={open}
+            onOpen={() => setOpen(true)}
+            onClose={() => setOpen(false)}
+            getOptionSelected={(option, value) => option === value}
+            getOptionLabel={(option) => option}
+            options={options}
+            loading={loading}
+            onClose={handleClose}
+            renderInput={SearchInput}
         />
     )
 }
-
-const TextInput = (params) => (
-    <TextField
-        {...params}
-        label="Press enter to search..."
-        variant="outlined"
-        InputProps={{
-            ...params.inputProps,
-            endAdornment: (
-                <InputAdornment>
-                    <IconButton>
-                        <SearchIcon />
-                    </IconButton>
-                </InputAdornment>
-            ),
-        }}
-    />
-)
-
-const films = [] // get these from OMDB
-
-export default SearchBar
