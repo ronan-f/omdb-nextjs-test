@@ -1,5 +1,5 @@
 .container {
-    width: 100vh;
+    width: 100vw;
     margin: auto;
     display: flex;
     align-items: center;
