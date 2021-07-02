@@ -1,6 +1,7 @@
 import { useUser } from "@auth0/nextjs-auth0"
 import { Layout } from "../components/Layout"
 import SearchBar from "../components/SearchBar"
+import ReviewFeed from "../components/ReviewFeed"
 import { LoadingIndicator } from "../components/LoadingIndicator"
 
 const Home = () => {
@@ -14,6 +15,7 @@ const Home = () => {
             <Layout>
                 <main>
                     <SearchBar />
+                    <ReviewFeed />
                 </main>
             </Layout>
         )
