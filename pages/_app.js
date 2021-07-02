@@ -1,6 +1,7 @@
 import { UserProvider } from "@auth0/nextjs-auth0";
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import appTheme from '../styles/theme';
+import '../styles/globals.css'
 
 const theme = createMuiTheme(appTheme);
 
