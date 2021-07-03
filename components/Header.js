@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
 const Greeting = () => {
     const classes = useStyles();
     const { error, loading, user } = useUser()
-    if (loading) return <p>Loading...</p>
+    if (loading || !user) return <p>Loading...</p>
     if (error) return <p>Oh no...{error.message}</p>
 
     return <Typography variant="h6" className={classes.title}>
