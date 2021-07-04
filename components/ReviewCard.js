@@ -53,7 +53,7 @@ const MetaData = ({ username, postedAt }) => {
                 <Typography variant="body1" component="p" color="inherit">
                     {username}
                 </Typography>
-                <Typography variant="body1" component="p" color="inherti">
+                <Typography variant="body1" component="p" color="inherit">
                     {postedAt}
                 </Typography>
             </div>

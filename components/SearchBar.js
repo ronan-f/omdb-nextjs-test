@@ -4,6 +4,7 @@ import Autocomplete from "@material-ui/lab/Autocomplete"
 import { useSearchMovies } from "../hooks/useSearchMovies"
 import CircularProgress from "@material-ui/core/CircularProgress"
 import { debounce } from "throttle-debounce"
+import { useRouter } from "next/router"
 
 const TIME_BETWEEN_NETWORK_REQUESTS = 200
 
@@ -11,6 +12,7 @@ export default function SearchBar() {
     const [isOpen, setOpen] = useState(false)
     const [options, setOptions] = useState([])
     const [isLoading, setIsLoading] = useState(false)
+    const router = useRouter();
 
     const handleChange = (e) => {
         setIsLoading(true)
@@ -35,7 +37,12 @@ export default function SearchBar() {
             setIsLoading(false)
 
             if (result.success && Array.isArray(result.data)) {
-                const newOptions = result.data.map((movie) => movie.Title)
+                const newOptions = result.data.map((movie) => {
+                    return {
+                        title: movie.Title,
+                        id: movie.imdbID
+                    }
+                })
                 setOptions(newOptions)
             }
         }
@@ -63,14 +70,19 @@ export default function SearchBar() {
         />
     )
 
+    const handleSelectMovie = (value) => {
+        router.push(`/movie/${value.id}`)
+    }
+
     return (
         <Autocomplete
             style={{ width: 300 }}
             open={isOpen}
             onOpen={() => setOpen(true)}
             onClose={() => setOpen(false)}
+            onChange={(_, val) => handleSelectMovie(val)}
             getOptionSelected={(option, value) => option === value}
-            getOptionLabel={(option) => option}
+            getOptionLabel={(option) => option.title}
             options={options}
             loading={isOpen && isLoading}
             onClose={handleClose}
