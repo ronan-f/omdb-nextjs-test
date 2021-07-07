@@ -1,4 +1,4 @@
-import { useUser } from "@auth0/nextjs-auth0"
+import { useUser, withPageAuthRequired } from "@auth0/nextjs-auth0"
 import { Layout } from "../components/Layout"
 import SearchBar from "../components/SearchBar"
 import ReviewFeed from "../components/ReviewFeed"
@@ -22,4 +22,4 @@ const Home = () => {
     }
 }
 
-export default Home
+export default withPageAuthRequired(Home)
