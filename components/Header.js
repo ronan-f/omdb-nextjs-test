@@ -1,9 +1,12 @@
 import { useUser } from "@auth0/nextjs-auth0"
+import Link from "next/link"
 import { Logout } from "./Logout"
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
+import HomeIcon from '@material-ui/icons/Home';
+import { Button } from "@material-ui/core";
 
 export const Header = () => {
     return (
@@ -13,26 +16,38 @@ export const Header = () => {
     )
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
     root: {
         flexGrow: 1,
     },
-    title: {
+    home: {
+        margin: "0 1rem",
+    },
+    greeting: {
         flexGrow: 1,
+        display: 'flex',
+        alignItems: 'center',
     },
 }));
 
 
 
 const Greeting = () => {
-    const classes = useStyles();
     const { error, loading, user } = useUser()
     if (loading || !user) return <p>Loading...</p>
     if (error) return <p>Oh no...{error.message}</p>
 
-    return <Typography variant="h6" className={classes.title}>
+    return <Typography variant="body">
         Hi {user.name}
     </Typography>
+}
+
+const Home = () => {
+    const classes = useStyles();
+
+    return <Button color="inherit">
+        <Link href="/home" ><HomeIcon className={classes.home} /></Link>
+    </Button>
 }
 
 
@@ -44,7 +59,10 @@ const NavBar = () => {
         <div className={classes.root}>
             <AppBar position="static">
                 <Toolbar>
-                    <Greeting />
+                    <div className={classes.greeting}>
+                        <Home />
+                        <Greeting />
+                    </div>
                     <Logout />
                 </Toolbar>
             </AppBar>
