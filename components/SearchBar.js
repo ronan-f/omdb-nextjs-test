@@ -34,7 +34,6 @@ export default function SearchBar() {
 
             const result = await useSearchMovies(searchTerm)
 
-            setIsLoading(false)
 
             if (result.success && Array.isArray(result.data)) {
                 const newOptions = result.data.map((movie) => {
@@ -45,6 +44,9 @@ export default function SearchBar() {
                 })
                 setOptions(newOptions)
             }
+
+            setIsLoading(false)
+
         }
     )
 
