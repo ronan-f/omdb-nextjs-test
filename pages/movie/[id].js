@@ -4,6 +4,7 @@ import { Layout } from '../../components/Layout'
 import { useGetMovie } from '../../hooks/useGetMovie'
 import { LoadingIndicator } from '../../components/LoadingIndicator';
 import Movie from '../../components/Movie'
+import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 
 const ReviewMovie = () => {
     const router = useRouter()
@@ -26,4 +27,4 @@ const ReviewMovie = () => {
 
 }
 
-export default ReviewMovie
+export default withPageAuthRequired(ReviewMovie);
