@@ -9,6 +9,9 @@ const theme = {
     },
   },
   typography: {
+    button: {
+      textTransform: 'none'
+    },
     fontFamily: 'Lexend Deca, sans-serif',
   },
 };
