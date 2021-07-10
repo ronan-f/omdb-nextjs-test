@@ -5,8 +5,8 @@ CREATE TABLE "Review" (
     "author_id" INTEGER NOT NULL,
     "content" TEXT,
     "rating" DOUBLE PRECISION NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
 
     PRIMARY KEY ("id")
 );
