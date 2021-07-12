@@ -8,7 +8,7 @@ generator client {
 }
 
 model User {
-  id     Int      @id @default(autoincrement())
+  id     String   @id @default(uuid())
   email  String
   Review Review[]
 }
@@ -16,7 +16,7 @@ model User {
 model Review {
   id         Int      @id @default(autoincrement())
   movie_id   String
-  author_id  Int
+  author_id  String
   content    String?
   rating     Float
   created_at DateTime @default(now())

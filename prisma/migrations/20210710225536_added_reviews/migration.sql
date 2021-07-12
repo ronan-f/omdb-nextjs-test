@@ -2,7 +2,7 @@
 CREATE TABLE "Review" (
     "id" SERIAL NOT NULL,
     "movie_id" TEXT NOT NULL,
-    "author_id" INTEGER NOT NULL,
+    "author_id" TEXT NOT NULL,
     "content" TEXT,
     "rating" DOUBLE PRECISION NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
