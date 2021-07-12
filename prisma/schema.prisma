@@ -8,6 +8,18 @@ generator client {
 }
 
 model User {
-  id    Int    @id @default(autoincrement())
-  email String
+  id     String   @id @default(uuid())
+  email  String
+  Review Review[]
+}
+
+model Review {
+  id         Int      @id @default(autoincrement())
+  movie_id   String
+  author_id  String
+  content    String?
+  rating     Float
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  author     User     @relation(fields: [author_id], references: [id])
 }
