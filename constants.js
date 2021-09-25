@@ -1,6 +1,5 @@
 export const pages = {
     HOME: "/home",
-    LOGIN: "/login",
     LOGOUT: "/logout",
 }
 
