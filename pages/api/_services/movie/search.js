@@ -16,7 +16,7 @@ export async function search(title) {
         result = null
     }
 
-    return await result.json()
+    return result && (await result.json())
 }
 
 function paramified(title) {
