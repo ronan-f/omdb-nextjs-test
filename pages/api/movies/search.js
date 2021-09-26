@@ -1,8 +1,8 @@
 import { formatResponse } from "../_helpers/formatResponse"
-import { config } from "../../../config"
 import nc from "next-connect"
 import { parseBody, validateParams } from "../_middleware/validation/movies"
 import { withApiAuthRequired } from "@auth0/nextjs-auth0"
+import { search } from "../_services/movie/search"
 
 const handler = nc().use(parseBody).use(validateParams).post(moviesHandler)
 
@@ -11,13 +11,9 @@ export default withApiAuthRequired(handler)
 export async function moviesHandler(_, res) {
     const { parsedBody } = res.locals
 
-    let result = await fetch(
-        `http://www.omdbapi.com/?s=${paramified(
-            parsedBody.movie
-        )}&page=1&type=movie&r=json&apikey=${config.OMDB_API_KEY}`
-    )
+    const result = await search(parsedBody.movie)
 
-    if (!result || !result.json) {
+    if (!result) {
         return res
             .status(404)
             .json(
@@ -29,11 +25,5 @@ export async function moviesHandler(_, res) {
             )
     }
 
-    result = await result.json()
-
     return res.status(200).json(formatResponse(true, 200, result.Search))
-}
-
-const paramified = (title) => {
-    return title.split(" ").join("+")
 }
