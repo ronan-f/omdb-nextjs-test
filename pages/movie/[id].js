@@ -11,9 +11,12 @@ const ReviewMovie = () => {
     const { id } = router.query
     const [movie, setMovie] = useState(null)
     const [review, setReview] = useState(null)
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         if (!id) return
+
+        setLoading(true)
 
         useGetMovie(id)
             .then((res) => {
@@ -21,9 +24,16 @@ const ReviewMovie = () => {
                 setReview(res.data.review)
             })
             .catch(console.error)
+            .finally(() => setLoading(false))
     }, [id])
 
-    if (!movie) return <LoadingIndicator fullScreen />
+    if (loading) return <LoadingIndicator fullScreen />
+    if (!movie)
+        return (
+            <h1>
+                Hmm...we couldn't find that movie. Try searching for another.
+            </h1>
+        )
 
     return (
         <Layout>
