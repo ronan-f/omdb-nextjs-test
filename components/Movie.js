@@ -104,6 +104,7 @@ const UserRatings = ({
                 <Rating
                     id="rating"
                     value={rating}
+                    name="rating"
                     onChange={handleRatingChange}
                     precision={0.5}
                 />
