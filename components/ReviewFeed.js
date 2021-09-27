@@ -1,24 +1,22 @@
-import { useEffect, useState } from "react"
 import useGetReviews from "../hooks/useGetReviews"
 import ReviewCard from "./ReviewCard"
 import { LoadingIndicator } from "./LoadingIndicator"
 
 const ReviewFeed = () => {
-    const [reviews, setReviews] = useState([])
-    const [loading, setLoading] = useState(true)
+    const { data, isLoading, isError } = useGetReviews()
 
-    useEffect(() => {
-        useGetReviews()
-            .then(setReviews)
-            .catch(console.error)
-            .finally(() => setLoading(false))
-    }, [])
+    if (isLoading) return <LoadingIndicator />
+    if (isError)
+        return (
+            <h1>
+                Error: Something went wrong when fetching reviews. Please try
+                again.
+            </h1>
+        )
 
-    if (loading) return <LoadingIndicator />
-    if (!reviews || !reviews.length)
-        return <h1>Hmm...no reviews to show yet.</h1>
+    if (!data || !data.length) return <h1>Hmm...no reviews to show yet.</h1>
 
-    return reviews.map(({ id, ...props }) => {
+    return data.map(({ id, ...props }) => {
         return <ReviewCard key={id} {...props} />
     })
 }
