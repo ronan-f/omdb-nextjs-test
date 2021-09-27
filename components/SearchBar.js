@@ -5,14 +5,26 @@ import { useSearchMovies } from "../hooks/useSearchMovies"
 import CircularProgress from "@material-ui/core/CircularProgress"
 import { debounce } from "throttle-debounce"
 import { useRouter } from "next/router"
+import { makeStyles } from "@material-ui/core/styles"
 
 const TIME_BETWEEN_NETWORK_REQUESTS = 200
+
+const useStyles = makeStyles((theme) => ({
+    searchBar: {
+        width: "300px",
+        [theme.breakpoints.down("md")]: {
+            margin: "auto",
+        },
+    },
+}))
 
 export default function SearchBar() {
     const [isOpen, setOpen] = useState(false)
     const [options, setOptions] = useState([])
     const [isLoading, setIsLoading] = useState(false)
-    const router = useRouter();
+    const router = useRouter()
+
+    const classes = useStyles()
 
     const handleChange = (e) => {
         setIsLoading(true)
@@ -34,19 +46,17 @@ export default function SearchBar() {
 
             const result = await useSearchMovies(searchTerm)
 
-
             if (result.success && Array.isArray(result.data)) {
                 const newOptions = result.data.map((movie) => {
                     return {
                         title: movie.Title,
-                        id: movie.imdbID
+                        id: movie.imdbID,
                     }
                 })
                 setOptions(newOptions)
             }
 
             setIsLoading(false)
-
         }
     )
 
@@ -78,7 +88,6 @@ export default function SearchBar() {
 
     return (
         <Autocomplete
-            style={{ width: 300 }}
             open={isOpen}
             onOpen={() => setOpen(true)}
             onClose={() => setOpen(false)}
@@ -86,6 +95,7 @@ export default function SearchBar() {
             getOptionSelected={(option, value) => option === value}
             getOptionLabel={(option) => option.title}
             options={options}
+            className={classes.searchBar}
             loading={isOpen && isLoading}
             onClose={handleClose}
             renderInput={SearchInput}

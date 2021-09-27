@@ -6,7 +6,7 @@ import { useEffect, useState } from "react"
 import { useSetReview } from "../hooks/useSetReview"
 import Toast from "./Toast"
 
-const styles = {
+const styles = (theme) => ({
     cardRoot: {
         display: "flex",
         alignItems: "center",
@@ -18,6 +18,9 @@ const styles = {
         display: "flex",
         flexDirection: "column",
         width: "45%",
+        [theme.breakpoints.down("md")]: {
+            width: "100%",
+        },
     },
     poster: {
         height: "300px",
@@ -25,10 +28,17 @@ const styles = {
     },
     cardContent: {
         display: "flex",
+        [theme.breakpoints.down("md")]: {
+            flexDirection: "column",
+        },
     },
     userRating: {
         width: "55%",
         paddingLeft: "1rem",
+        [theme.breakpoints.down("md")]: {
+            width: "100%",
+            paddingLeft: "0",
+        },
     },
     title: {
         color: "white",
@@ -38,7 +48,7 @@ const styles = {
     reviewInput: {
         marginBottom: "1rem",
     },
-}
+})
 
 const handleError = (e) => {
     const defaultImgLocation = "/assets/default-poster.jpeg"
