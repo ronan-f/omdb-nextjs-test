@@ -1,4 +1,4 @@
-import { client } from "../_helpers/createPrismaClient"
+import client from "../_helpers/createPrismaClient"
 
 export default async (req, res) => {
     if (!req || !req.body || !req.body.email) return res.status(400).send()

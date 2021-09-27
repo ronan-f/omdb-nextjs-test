@@ -14,5 +14,5 @@ export async function getMovieById(id) {
         result = null
     }
 
-    return await result.json()
+    return result && (await result.json())
 }

@@ -1,4 +1,4 @@
-import { client } from "../../_helpers/createPrismaClient"
+import client from "../../_helpers/createPrismaClient"
 
 export async function fetchReviews(count) {
     let reviews
@@ -7,6 +7,9 @@ export async function fetchReviews(count) {
             take: count,
             include: {
                 author: true,
+            },
+            orderBy: {
+                updated_at: "desc",
             },
         })
     } catch (e) {

@@ -8,12 +8,13 @@ export const parseBody = (req, res, next) => {
     try {
         parsedBody = JSON.parse(body)
     } catch (e) {
+        console.error(e)
         return res
             .status(400)
             .json(formatResponse(false, 400, `Could not parse request`))
     }
 
-    res.locals = { parsedBody }
+    res.locals = { ...res.locals, parsedBody }
 
     next()
 }
