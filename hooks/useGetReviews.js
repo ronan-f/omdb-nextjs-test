@@ -1,9 +1,10 @@
 const { server } = require("../config")
+const { useQuery } = require("react-query")
 
-export const useGetReviews = async () => {
-    let res = await fetch(`${server}/api/reviews`)
-
-    return res && res.json()
+export const useGetReviews = () => {
+    return useQuery("reviews", () =>
+        fetch(`${server}/api/reviews`).then((res) => res.json())
+    )
 }
 
 export default useGetReviews
