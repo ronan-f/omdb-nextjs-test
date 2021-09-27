@@ -17,7 +17,6 @@ const ReviewMovie = () => {
 
         useGetMovie(id)
             .then((res) => {
-                console.log({ res })
                 setMovie(res.data.movie)
                 setReview(res.data.review)
             })
