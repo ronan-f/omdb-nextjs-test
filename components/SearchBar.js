@@ -3,6 +3,7 @@ import TextField from "@material-ui/core/TextField"
 import Autocomplete from "@material-ui/lab/Autocomplete"
 import { useSearchMovies } from "../hooks/useSearchMovies"
 import CircularProgress from "@material-ui/core/CircularProgress"
+import SearchIcon from "@material-ui/icons/Search"
 import { debounce } from "throttle-debounce"
 import { useRouter } from "next/router"
 import { makeStyles } from "@material-ui/core/styles"
@@ -12,9 +13,7 @@ const TIME_BETWEEN_NETWORK_REQUESTS = 200
 const useStyles = makeStyles((theme) => ({
     searchBar: {
         width: "300px",
-        [theme.breakpoints.down("md")]: {
-            margin: "auto",
-        },
+        margin: "1rem auto",
     },
 }))
 
@@ -60,14 +59,13 @@ export default function SearchBar() {
         }
     )
 
-    const LoadingIndicator = ({ params }) => (
-        <>
-            {isOpen && isLoading && (
-                <CircularProgress color="inherit" size={20} />
-            )}
-            {params.InputProps.endAdornment}
-        </>
-    )
+    const LoadingIndicator = ({ params }) => {
+        if (isOpen && isLoading) {
+            return <CircularProgress color="inherit" size={20} />
+        }
+
+        return <SearchIcon />
+    }
 
     const SearchInput = (params) => (
         <TextField
@@ -83,12 +81,14 @@ export default function SearchBar() {
     )
 
     const handleSelectMovie = (value) => {
+        if (!value) return
         router.push(`/movie/${value.id}`)
     }
 
     return (
         <Autocomplete
             open={isOpen}
+            freeSolo
             onOpen={() => setOpen(true)}
             onClose={() => setOpen(false)}
             onChange={(_, val) => handleSelectMovie(val)}
