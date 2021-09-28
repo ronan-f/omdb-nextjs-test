@@ -35,7 +35,11 @@ const Greeting = () => {
     if (loading || !user) return <p>Loading...</p>
     if (error) return <p>Oh no...{error.message}</p>
 
-    return <Typography variant="body1">Hi {user.name}</Typography>
+    return (
+        <Typography variant="body1">
+            Hi {user.username || user.nickname || user.email}
+        </Typography>
+    )
 }
 
 const Home = () => {

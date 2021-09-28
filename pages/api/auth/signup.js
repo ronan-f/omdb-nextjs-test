@@ -5,7 +5,7 @@ export default async (req, res) => {
 
     try {
         await client.user.create({
-            data: { email: req.body.email },
+            data: { email: req.body.email, username: req.body.username },
         })
     } catch (e) {
         console.error(

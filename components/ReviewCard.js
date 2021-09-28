@@ -1,43 +1,69 @@
 import { makeStyles } from "@material-ui/core/styles"
 import Card from "@material-ui/core/Card"
-import Box from "@material-ui/core/Box"
 import CardContent from "@material-ui/core/CardContent"
 import Rating from "@material-ui/lab/Rating"
 import Typography from "@material-ui/core/Typography"
-import Avatar from "@material-ui/core/Avatar"
 
-const useStyles = makeStyles(() => {
+const useStyles = makeStyles((theme) => {
     return {
         root: {
+            border: `1px solid ${theme.palette.primary.main}`,
             maxWidth: 550,
             minWidth: "40vw",
             display: "flex",
             flexDirection: "column",
-            marginTop: "1rem",
             overflow: "wrap",
+            margin: "1rem auto",
+            boxShadow:
+                "rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;",
+            [theme.breakpoints.down("md")]: {
+                maxWidth: "95vw",
+            },
+            [theme.breakpoints.up("md")]: {
+                maxWidth: 550,
+            },
         },
         info: {
             display: "flex",
             flexDirection: "column",
+            width: "30%",
+            [theme.breakpoints.down("md")]: {
+                width: "35%",
+            },
         },
         main: {
             display: "flex",
         },
         metadata: {
-            padding: "1rem",
-            display: "flex",
-            alignItems: "center",
-            color: "white",
+            color: "grey",
+            overflowWrap: "anywhere",
         },
         metadataContainer: {
             paddingLeft: "1rem",
         },
+        rating: {
+            marginLeft: "-3px",
+        },
+        movieImg: {
+            border: `1px solid lightgrey`,
+        },
     }
 })
 
-const Review = ({ review }) => {
+const Review = ({ review, username, postedAt, rating }) => {
+    const classes = useStyles()
+
     return (
         <CardContent>
+            <MetaData username={username} postedAt={postedAt} />
+            <Rating
+                className={classes.rating}
+                precision={0.5}
+                name="read-only"
+                value={rating}
+                readOnly
+            />
+
             <Typography variant="body1" component="p">
                 {review}
             </Typography>
@@ -49,24 +75,13 @@ const MetaData = ({ username, postedAt }) => {
     const classes = useStyles()
 
     return (
-        <Box className={classes.metadata} bgcolor="primary.main">
-            <Avatar
-                alt="Steve Jobs"
-                src="https://www.glassdoor.com/blog/app/uploads/sites/2/jobs.jpg"
-            />
-            <div className={classes.metadataContainer}>
-                <Typography variant="body1" component="p" color="inherit">
-                    {username}
-                </Typography>
-                <Typography variant="body1" component="p" color="inherit">
-                    {postedAt}
-                </Typography>
-            </div>
-        </Box>
+        <Typography className={classes.metadata} variant="body1" component="p">
+            {username} - {postedAt}
+        </Typography>
     )
 }
 
-const MovieInfo = ({ movie, rating }) => {
+const MovieInfo = ({ movie }) => {
     const classes = useStyles()
 
     return (
@@ -78,8 +93,8 @@ const MovieInfo = ({ movie, rating }) => {
             >
                 {movie.Title}
             </Typography>
-            <Rating name="read-only" value={rating} readOnly />
             <img
+                className={classes.movieImg}
                 height="180px"
                 width="120px"
                 src={movie.Poster}
@@ -89,15 +104,21 @@ const MovieInfo = ({ movie, rating }) => {
     )
 }
 
-const ReviewCard = ({ content, movie, rating, author, created_at }) => {
+const ReviewCard = ({ content, movie, rating, author, updated_at }) => {
     const classes = useStyles()
+
+    const username = author.username || author.nickname || author.email
 
     return (
         <Card className={classes.root} variant="outlined">
-            <MetaData username={author.email} postedAt={created_at} />
             <div className={classes.main}>
                 <MovieInfo movie={movie} rating={rating} />
-                <Review review={content} />
+                <Review
+                    username={username}
+                    postedAt={updated_at}
+                    review={content}
+                    rating={rating}
+                />
             </div>
         </Card>
     )
