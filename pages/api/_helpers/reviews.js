@@ -26,7 +26,7 @@ async function withMovies(reviews) {
     return reviews.map((review, index) => {
         return {
             ...review,
-            created_at: formatReadableDate(review.created_at),
+            updated_at: formatReadableDate(review.updated_at),
             movie: movies[index],
         }
     })
