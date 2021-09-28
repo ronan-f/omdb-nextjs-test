@@ -5,6 +5,9 @@ import TextField from "@material-ui/core/TextField"
 import { useEffect, useState } from "react"
 import { useSetReview } from "../hooks/useSetReview"
 import Toast from "./Toast"
+import { useRouter } from "next/router"
+import { pages } from "../constants"
+import CircularProgress from "@material-ui/core/CircularProgress"
 
 const styles = (theme) => ({
     cardRoot: {
@@ -48,6 +51,10 @@ const styles = (theme) => ({
     reviewInput: {
         marginBottom: "1rem",
     },
+    spinner: {
+        color: "white",
+        marginLeft: "1rem",
+    },
 })
 
 const handleError = (e) => {
@@ -87,8 +94,10 @@ const UserRatings = ({
     setRating,
     movieId,
     reviewId,
-    setShowSuccessToast,
     setShowErrorToast,
+    redirect,
+    loading,
+    setLoading,
 }) => {
     const handleRatingChange = (e) => {
         setRating(Number(e.target.value))
@@ -99,13 +108,11 @@ const UserRatings = ({
     }
 
     const handleSubmitReview = async () => {
-        setShowSuccessToast(true)
-
-        const res = await useSetReview(review, rating, movieId, reviewId)
-        if (!res) {
-            setShowErrorToast(true)
-            return
-        }
+        setLoading(true)
+        useSetReview(review, rating, movieId, reviewId)
+            .then(redirect)
+            .catch(() => setShowErrorToast(true))
+            .finally(() => setLoading(false))
     }
     return (
         <div className={classes.userRating}>
@@ -138,8 +145,12 @@ const UserRatings = ({
                 onClick={handleSubmitReview}
                 variant="contained"
                 color="primary"
+                disabled={loading}
             >
                 Submit
+                {loading && (
+                    <CircularProgress size={20} className={classes.spinner} />
+                )}
             </Button>
         </div>
     )
@@ -160,8 +171,9 @@ const Movie = ({
 
     const [reviewContent, setReviewContent] = useState("")
     const [rating, setRating] = useState(0)
-    const [showSuccessToast, setShowSuccessToast] = useState(false)
     const [showErrorToast, setShowErrorToast] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const router = useRouter()
 
     useEffect(() => {
         if (review) {
@@ -169,6 +181,8 @@ const Movie = ({
             setRating(review.rating)
         }
     }, [review])
+
+    const redirect = () => router.push(pages.HOME)
 
     return (
         <Card className={classes.cardRoot} variant="outlined">
@@ -202,14 +216,10 @@ const Movie = ({
                     setReview={setReviewContent}
                     setRating={setRating}
                     classes={classes}
-                    setShowSuccessToast={setShowSuccessToast}
                     setShowErrorToast={setShowErrorToast}
-                />
-
-                <Toast
-                    open={showSuccessToast}
-                    message="Review updated successfully"
-                    onClose={() => setShowSuccessToast(false)}
+                    redirect={redirect}
+                    loading={loading}
+                    setLoading={setLoading}
                 />
 
                 <Toast
