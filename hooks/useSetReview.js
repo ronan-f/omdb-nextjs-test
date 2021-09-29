@@ -1,6 +1,6 @@
 const { server } = require("../config")
 
-export const useSetReview = async (review, rating, movieId, reviewId) => {
+export const useSetReview = async (review = "", rating, movieId, reviewId) => {
     let res
 
     try {
