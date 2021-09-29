@@ -44,7 +44,7 @@ async function updateReview(review, rating, reviewId) {
 }
 
 export async function upsertReview(review, rating, author, movieId, reviewId) {
-    if (!review || rating === undefined) return
+    if (!rating || !author || !movieId) return
 
     let result
 
