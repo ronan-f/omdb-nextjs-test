@@ -10,6 +10,8 @@ import { pages } from "../constants"
 import CircularProgress from "@material-ui/core/CircularProgress"
 import { Alert } from "@material-ui/lab"
 
+const defaultError = "Hmm something went wrong"
+
 const styles = (theme) => ({
     cardRoot: {
         margin: "1rem auto",
@@ -120,6 +122,7 @@ const ReviewForm = ({
     movieId,
     reviewId,
     setShowErrorToast,
+    setErrorToastMessage,
     redirect,
     loading,
     setLoading,
@@ -133,6 +136,12 @@ const ReviewForm = ({
     }
 
     const handleSubmitReview = async () => {
+        if (!rating) {
+            setErrorToastMessage("A rating is required to submit a review")
+            setShowErrorToast(true)
+
+            return
+        }
         setLoading(true)
         useSetReview(review, rating, movieId, reviewId)
             .then(redirect)
@@ -198,6 +207,7 @@ const Movie = ({
     const [rating, setRating] = useState(0)
     const [hasReviewed, setHasReviewed] = useState(false)
     const [showErrorToast, setShowErrorToast] = useState(false)
+    const [errorToastMessage, setErrorToastMessage] = useState(defaultError)
     const [loading, setLoading] = useState(false)
     const router = useRouter()
 
@@ -245,6 +255,7 @@ const Movie = ({
                             setRating={setRating}
                             classes={classes}
                             setShowErrorToast={setShowErrorToast}
+                            setErrorToastMessage={setErrorToastMessage}
                             redirect={redirect}
                             loading={loading}
                             setLoading={setLoading}
@@ -255,7 +266,7 @@ const Movie = ({
                 <Toast
                     open={showErrorToast}
                     state="error"
-                    message="Hmm. Something went wrong when saving. Try again."
+                    message={errorToastMessage}
                     onClose={() => setShowErrorToast(false)}
                 />
             </CardContent>
