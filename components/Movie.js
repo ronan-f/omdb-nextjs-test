@@ -8,26 +8,40 @@ import Toast from "./Toast"
 import { useRouter } from "next/router"
 import { pages } from "../constants"
 import CircularProgress from "@material-ui/core/CircularProgress"
+import { Alert } from "@material-ui/lab"
 
 const styles = (theme) => ({
     cardRoot: {
+        margin: "1rem auto",
         display: "flex",
         alignItems: "center",
         flexDirection: "column",
         minWidth: "200px",
         maxWidth: "875px",
+        [theme.breakpoints.down("md")]: {
+            margin: 0,
+        },
+    },
+    header: {
+        fontSize: "2rem",
+        marginBottom: "1rem",
+        color: theme.palette.primary.main,
     },
     about: {
         display: "flex",
-        flexDirection: "column",
-        width: "45%",
+        justifyContent: "space-between",
         [theme.breakpoints.down("md")]: {
             width: "100%",
+            flexDirection: "column",
         },
     },
     poster: {
-        height: "300px",
-        width: "200px",
+        marginRight: "1rem",
+        border: "1px solid grey",
+        [theme.breakpoints.down("md")]: {
+            margin: 0,
+            marginBottom: "1rem",
+        },
     },
     cardContent: {
         display: "flex",
@@ -36,8 +50,7 @@ const styles = (theme) => ({
         },
     },
     userRating: {
-        width: "55%",
-        paddingLeft: "1rem",
+        width: "90%",
         [theme.breakpoints.down("md")]: {
             width: "100%",
             paddingLeft: "0",
@@ -55,6 +68,17 @@ const styles = (theme) => ({
         color: "white",
         marginLeft: "1rem",
     },
+    critic: {
+        display: "block",
+        margin: "1rem 0",
+        fontWeight: 600,
+    },
+    alert: {
+        margin: "1rem auto",
+        [theme.breakpoints.down("md")]: {
+            width: "90%",
+        },
+    },
 })
 
 const handleError = (e) => {
@@ -63,30 +87,31 @@ const handleError = (e) => {
     e.target.src = defaultImgLocation
 }
 
-const CriticRating = ({ source, value }) => {
+const CriticRating = ({ source, value, classes }) => {
     if (source === "Internet Movie Database") source = "IMDb"
     return (
-        <>
-            <Typography>
-                {source}: {value}
-            </Typography>
-        </>
+        <Typography className={classes.critic} variant="body">
+            {source}: {value}
+        </Typography>
     )
 }
 
-const MovieRatings = ({ ratings }) => {
-    return ratings.map((rating) => {
-        return (
-            <CriticRating
-                key={rating.Source}
-                source={rating.Source}
-                value={rating.Value}
-            />
-        )
-    })
+const MovieRatings = ({ ratings, classes }) => {
+    return ratings
+        .filter((rating) => rating.Source === "Internet Movie Database")
+        .map((rating) => {
+            return (
+                <CriticRating
+                    classes={classes}
+                    key={rating.Source}
+                    source={rating.Source}
+                    value={rating.Value}
+                />
+            )
+        })
 }
 
-const UserRatings = ({
+const ReviewForm = ({
     classes,
     review,
     rating,
@@ -136,7 +161,7 @@ const UserRatings = ({
                     placeholder="Oh what a fantastic movie..."
                     multiline
                     fullWidth
-                    rows={10}
+                    rows={5}
                     variant="outlined"
                 />
             </div>
@@ -171,14 +196,16 @@ const Movie = ({
 
     const [reviewContent, setReviewContent] = useState("")
     const [rating, setRating] = useState(0)
+    const [hasReviewed, setHasReviewed] = useState(false)
     const [showErrorToast, setShowErrorToast] = useState(false)
     const [loading, setLoading] = useState(false)
     const router = useRouter()
 
     useEffect(() => {
-        if (review) {
+        if (review && review.rating) {
             setReviewContent(review.content)
             setRating(review.rating)
+            setHasReviewed(true)
         }
     }, [review])
 
@@ -186,9 +213,12 @@ const Movie = ({
 
     return (
         <Card className={classes.cardRoot} variant="outlined">
-            <Box className={classes.title} bgcolor="primary.main">
-                <Typography variant="h3">{Title}</Typography>
-            </Box>
+            {hasReviewed && (
+                <Alert className={classes.alert}>
+                    Looks like you've already reviewed this one. Submit again to
+                    edit.{" "}
+                </Alert>
+            )}
 
             <CardContent className={classes.cardContent}>
                 <div className={classes.about}>
@@ -198,29 +228,29 @@ const Movie = ({
                         onError={handleError}
                         alt={`Movie poster for ${Title}`}
                     />
-                    <div>
-                        <Typography color="textSecondary" variant="subtitle1">
-                            {Year} - {Runtime}
-                        </Typography>
-                        <Typography variant="subtitle2">{Plot}</Typography>
 
-                        <MovieRatings ratings={Ratings} />
+                    <div>
+                        <Typography className={classes.header} variant="h1">
+                            {Title} ({Year})
+                        </Typography>
+                        <Typography variant="body">{Plot}</Typography>
+
+                        <MovieRatings ratings={Ratings} classes={classes} />
+                        <ReviewForm
+                            reviewId={review && review.id}
+                            movieId={imdbID}
+                            review={reviewContent}
+                            rating={rating}
+                            setReview={setReviewContent}
+                            setRating={setRating}
+                            classes={classes}
+                            setShowErrorToast={setShowErrorToast}
+                            redirect={redirect}
+                            loading={loading}
+                            setLoading={setLoading}
+                        />
                     </div>
                 </div>
-
-                <UserRatings
-                    reviewId={review && review.id}
-                    movieId={imdbID}
-                    review={reviewContent}
-                    rating={rating}
-                    setReview={setReviewContent}
-                    setRating={setRating}
-                    classes={classes}
-                    setShowErrorToast={setShowErrorToast}
-                    redirect={redirect}
-                    loading={loading}
-                    setLoading={setLoading}
-                />
 
                 <Toast
                     open={showErrorToast}
