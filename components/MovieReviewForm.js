@@ -135,6 +135,16 @@ const ReviewForm = ({ classes, review, movieId, reviewId }) => {
     )
 }
 
+const EditAlert = ({ hasReviewed, classes }) => {
+    if (!hasReviewed) return null
+
+    return (
+        <Alert className={classes.alert}>
+            Looks like you've already reviewed this one. Submit again to edit.{" "}
+        </Alert>
+    )
+}
+
 const MovieReviewForm = ({
     Year,
     Title,
@@ -144,20 +154,14 @@ const MovieReviewForm = ({
     Plot,
     review = {},
     imdbID,
+    hasReviewed,
     ...props
 }) => {
     const { classes } = props
 
-    const hasReviewed = review && review.rating
-
     return (
         <Card className={classes.cardRoot} variant="outlined">
-            {hasReviewed && (
-                <Alert className={classes.alert}>
-                    Looks like you've already reviewed this one. Submit again to
-                    edit.{" "}
-                </Alert>
-            )}
+            <EditAlert hasReviewed={hasReviewed} classes={classes} />
 
             <CardContent className={classes.cardContent}>
                 <div className={classes.about}>
