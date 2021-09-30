@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 import { Layout } from "../../components/Layout"
 import { useGetMovie } from "../../hooks/useGetMovie"
 import { LoadingIndicator } from "../../components/LoadingIndicator"
-import Movie from "../../components/Movie"
+import Movie from "../../components/MovieReviewForm"
 import { withPageAuthRequired } from "@auth0/nextjs-auth0"
 
 const ReviewMovie = () => {

@@ -1,15 +1,16 @@
-import { Card, Typography, CardContent, Box, Button } from "@material-ui/core"
+import { Card, Typography, CardContent } from "@material-ui/core"
 import { withStyles } from "@material-ui/core/styles"
 import Rating from "@material-ui/lab/Rating"
 import TextField from "@material-ui/core/TextField"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { useSetReview } from "../hooks/useSetReview"
 import { useRouter } from "next/router"
 import { pages, errors } from "../constants"
-import CircularProgress from "@material-ui/core/CircularProgress"
+import SubmitButton from "./Buttons/SubmitButton"
 import { Alert } from "@material-ui/lab"
 import { useToastContext } from "../contexts/ToastContext"
 import { handleImgError } from "../utils/handleImgError"
+import CriticRatings from "./CriticRatings"
 
 const styles = (theme) => ({
     cardRoot: {
@@ -65,15 +66,7 @@ const styles = (theme) => ({
     reviewInput: {
         marginBottom: "1rem",
     },
-    spinner: {
-        color: "white",
-        marginLeft: "1rem",
-    },
-    critic: {
-        display: "block",
-        margin: "1rem 0",
-        fontWeight: 600,
-    },
+
     alert: {
         margin: "1rem auto",
         [theme.breakpoints.down("md")]: {
@@ -82,49 +75,20 @@ const styles = (theme) => ({
     },
 })
 
-const CriticRating = ({ source, value, classes }) => {
-    if (source === "Internet Movie Database") source = "IMDb"
-    return (
-        <Typography className={classes.critic} variant="body1">
-            {source}: {value}
-        </Typography>
-    )
-}
-
-const MovieRatings = ({ ratings, classes }) => {
-    return ratings
-        .filter((rating) => rating.Source === "Internet Movie Database")
-        .map((rating) => {
-            return (
-                <CriticRating
-                    classes={classes}
-                    key={rating.Source}
-                    source={rating.Source}
-                    value={rating.Value}
-                />
-            )
-        })
-}
-
-const ReviewForm = ({
-    classes,
-    review,
-    rating,
-    setReview,
-    setRating,
-    movieId,
-    reviewId,
-}) => {
+const ReviewForm = ({ classes, review, movieId, reviewId }) => {
     const router = useRouter()
     const { toastDispatch } = useToastContext()
     const [loading, setLoading] = useState(false)
+
+    const [content, setContent] = useState((review && review.content) || "")
+    const [rating, setRating] = useState((review && review.rating) || 0)
 
     const handleRatingChange = (e) => {
         setRating(Number(e.target.value))
     }
 
     const handleReviewChange = (e) => {
-        setReview(e.target.value)
+        setContent(e.target.value)
     }
 
     const redirect = () => router.push(pages.HOME)
@@ -134,7 +98,7 @@ const ReviewForm = ({
             return toastDispatch(errors.NO_RATING)
         }
         setLoading(true)
-        useSetReview(review, rating, movieId, reviewId)
+        useSetReview(content, rating, movieId, reviewId)
             .then(redirect)
             .catch(() => toastDispatch(errors.GENERIC))
             .finally(() => setLoading(false))
@@ -157,7 +121,7 @@ const ReviewForm = ({
                     className={classes.reviewInput}
                     id="review"
                     onChange={handleReviewChange}
-                    value={review}
+                    value={content}
                     placeholder="Oh what a fantastic movie..."
                     multiline
                     fullWidth
@@ -166,22 +130,12 @@ const ReviewForm = ({
                 />
             </div>
 
-            <Button
-                onClick={handleSubmitReview}
-                variant="contained"
-                color="primary"
-                disabled={loading}
-            >
-                Submit
-                {loading && (
-                    <CircularProgress size={20} className={classes.spinner} />
-                )}
-            </Button>
+            <SubmitButton handleSubmit={handleSubmitReview} loading={loading} />
         </div>
     )
 }
 
-const Movie = ({
+const MovieReviewForm = ({
     Year,
     Title,
     Poster,
@@ -194,17 +148,7 @@ const Movie = ({
 }) => {
     const { classes } = props
 
-    const [reviewContent, setReviewContent] = useState("")
-    const [rating, setRating] = useState(0)
-    const [hasReviewed, setHasReviewed] = useState(false)
-
-    useEffect(() => {
-        if (review && review.rating) {
-            setReviewContent(review.content)
-            setRating(review.rating)
-            setHasReviewed(true)
-        }
-    }, [review])
+    const hasReviewed = review && review.rating
 
     return (
         <Card className={classes.cardRoot} variant="outlined">
@@ -230,14 +174,11 @@ const Movie = ({
                         </Typography>
                         <Typography variant="body1">{Plot}</Typography>
 
-                        <MovieRatings ratings={Ratings} classes={classes} />
+                        <CriticRatings ratings={Ratings} classes={classes} />
                         <ReviewForm
                             reviewId={review && review.id}
                             movieId={imdbID}
-                            review={reviewContent}
-                            rating={rating}
-                            setReview={setReviewContent}
-                            setRating={setRating}
+                            review={review}
                             classes={classes}
                         />
                     </div>
@@ -247,4 +188,4 @@ const Movie = ({
     )
 }
 
-export default withStyles(styles)(Movie)
+export default withStyles(styles)(MovieReviewForm)
