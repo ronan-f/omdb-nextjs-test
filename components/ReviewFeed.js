@@ -5,7 +5,7 @@ import { LoadingIndicator } from "./LoadingIndicator"
 const ReviewFeed = () => {
     const { data, isLoading, isError } = useGetReviews()
 
-    if (isLoading) return <LoadingIndicator />
+    if (isLoading) return <LoadingIndicator fullScreen />
     if (isError)
         return (
             <h1>

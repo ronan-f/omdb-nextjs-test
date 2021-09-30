@@ -1,24 +1,44 @@
 import { Snackbar } from "@material-ui/core"
 import { Alert } from "@material-ui/lab"
 import isMobile from "../utils/isMobile"
+import { useToastContext, REMOVE } from "../contexts/ToastContext"
 
-const Toast = ({ open, state = "success", message, onClose }) => {
-    let anchor = { vertical: "bottom", horizontal: "center" }
-    if (isMobile()) {
-        anchor.vertical = "top"
+const ToastList = ({ toastList }) => {
+    return toastList.map((toast) => <Toast payload={toast} />)
+}
+
+const Toast = ({ payload }) => {
+    const { toastDispatch } = useToastContext()
+
+    const onClose = (id) => {
+        toastDispatch({ type: REMOVE, payload: { id } })
     }
+
+    const toastPosition = getToastPosition()
+
     return (
         <Snackbar
-            anchorOrigin={anchor}
-            open={open}
+            key={payload.id}
+            anchorOrigin={toastPosition}
+            open={true}
             autoHideDuration={3000}
-            onClose={onClose}
+            onClose={() => onClose(payload.id)}
         >
-            <Alert severity={state} sx={{ width: "100%" }}>
-                {message}
+            <Alert severity={payload.severity} sx={{ width: "100%" }}>
+                {payload.content}
             </Alert>
         </Snackbar>
     )
 }
 
-export default Toast
+const getToastPosition = () => {
+    let anchor = { vertical: "bottom", horizontal: "center" }
+
+    if (isMobile()) {
+        anchor.vertical = "top"
+    }
+
+    return anchor
+}
+
+export default ToastList
