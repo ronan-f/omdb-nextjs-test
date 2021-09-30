@@ -4,13 +4,12 @@ import Rating from "@material-ui/lab/Rating"
 import TextField from "@material-ui/core/TextField"
 import { useEffect, useState } from "react"
 import { useSetReview } from "../hooks/useSetReview"
-import Toast from "./Toast"
 import { useRouter } from "next/router"
-import { pages } from "../constants"
+import { pages, errors } from "../constants"
 import CircularProgress from "@material-ui/core/CircularProgress"
 import { Alert } from "@material-ui/lab"
-
-const defaultError = "Hmm something went wrong"
+import { useToastContext } from "../contexts/ToastContext"
+import { handleImgError } from "../utils/handleImgError"
 
 const styles = (theme) => ({
     cardRoot: {
@@ -83,16 +82,10 @@ const styles = (theme) => ({
     },
 })
 
-const handleError = (e) => {
-    const defaultImgLocation = "/assets/default-poster.jpeg"
-
-    e.target.src = defaultImgLocation
-}
-
 const CriticRating = ({ source, value, classes }) => {
     if (source === "Internet Movie Database") source = "IMDb"
     return (
-        <Typography className={classes.critic} variant="body">
+        <Typography className={classes.critic} variant="body1">
             {source}: {value}
         </Typography>
     )
@@ -121,12 +114,11 @@ const ReviewForm = ({
     setRating,
     movieId,
     reviewId,
-    setShowErrorToast,
-    setErrorToastMessage,
-    redirect,
-    loading,
-    setLoading,
 }) => {
+    const router = useRouter()
+    const { toastDispatch } = useToastContext()
+    const [loading, setLoading] = useState(false)
+
     const handleRatingChange = (e) => {
         setRating(Number(e.target.value))
     }
@@ -135,17 +127,16 @@ const ReviewForm = ({
         setReview(e.target.value)
     }
 
+    const redirect = () => router.push(pages.HOME)
+
     const handleSubmitReview = async () => {
         if (!rating) {
-            setErrorToastMessage("A rating is required to submit a review")
-            setShowErrorToast(true)
-
-            return
+            return toastDispatch(errors.NO_RATING)
         }
         setLoading(true)
         useSetReview(review, rating, movieId, reviewId)
             .then(redirect)
-            .catch(() => setShowErrorToast(true))
+            .catch(() => toastDispatch(errors.GENERIC))
             .finally(() => setLoading(false))
     }
     return (
@@ -206,10 +197,6 @@ const Movie = ({
     const [reviewContent, setReviewContent] = useState("")
     const [rating, setRating] = useState(0)
     const [hasReviewed, setHasReviewed] = useState(false)
-    const [showErrorToast, setShowErrorToast] = useState(false)
-    const [errorToastMessage, setErrorToastMessage] = useState(defaultError)
-    const [loading, setLoading] = useState(false)
-    const router = useRouter()
 
     useEffect(() => {
         if (review && review.rating) {
@@ -218,8 +205,6 @@ const Movie = ({
             setHasReviewed(true)
         }
     }, [review])
-
-    const redirect = () => router.push(pages.HOME)
 
     return (
         <Card className={classes.cardRoot} variant="outlined">
@@ -235,7 +220,7 @@ const Movie = ({
                     <img
                         className={classes.poster}
                         src={Poster}
-                        onError={handleError}
+                        onError={handleImgError}
                         alt={`Movie poster for ${Title}`}
                     />
 
@@ -243,7 +228,7 @@ const Movie = ({
                         <Typography className={classes.header} variant="h1">
                             {Title} ({Year})
                         </Typography>
-                        <Typography variant="body">{Plot}</Typography>
+                        <Typography variant="body1">{Plot}</Typography>
 
                         <MovieRatings ratings={Ratings} classes={classes} />
                         <ReviewForm
@@ -254,21 +239,9 @@ const Movie = ({
                             setReview={setReviewContent}
                             setRating={setRating}
                             classes={classes}
-                            setShowErrorToast={setShowErrorToast}
-                            setErrorToastMessage={setErrorToastMessage}
-                            redirect={redirect}
-                            loading={loading}
-                            setLoading={setLoading}
                         />
                     </div>
                 </div>
-
-                <Toast
-                    open={showErrorToast}
-                    state="error"
-                    message={errorToastMessage}
-                    onClose={() => setShowErrorToast(false)}
-                />
             </CardContent>
         </Card>
     )
