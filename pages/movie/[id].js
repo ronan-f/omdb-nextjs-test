@@ -37,7 +37,11 @@ const ReviewMovie = () => {
 
     return (
         <Layout>
-            <MovieReviewForm review={review} {...movie} />
+            <MovieReviewForm
+                hasReviewed={review && review.rating}
+                review={review}
+                {...movie}
+            />
         </Layout>
     )
 }
