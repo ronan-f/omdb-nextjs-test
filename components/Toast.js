@@ -4,7 +4,7 @@ import isMobile from "../utils/isMobile"
 import { useToastContext, REMOVE } from "../contexts/ToastContext"
 
 const ToastList = ({ toastList }) => {
-    return toastList.map((toast) => <Toast payload={toast} />)
+    return toastList.map((toast) => <Toast key={toast.id} payload={toast} />)
 }
 
 const Toast = ({ payload }) => {

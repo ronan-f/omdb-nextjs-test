@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 import { Layout } from "../../components/Layout"
 import { useGetMovie } from "../../hooks/useGetMovie"
 import { LoadingIndicator } from "../../components/LoadingIndicator"
-import Movie from "../../components/Movie"
+import MovieReviewForm from "../../components/MovieReviewForm"
 import { withPageAuthRequired } from "@auth0/nextjs-auth0"
 
 const ReviewMovie = () => {
@@ -37,7 +37,11 @@ const ReviewMovie = () => {
 
     return (
         <Layout>
-            <Movie review={review} {...movie} />
+            <MovieReviewForm
+                hasReviewed={review && review.rating}
+                review={review}
+                {...movie}
+            />
         </Layout>
     )
 }
